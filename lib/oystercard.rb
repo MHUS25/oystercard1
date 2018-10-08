@@ -1,6 +1,7 @@
 # require "./lib/oystercard"
 class Oystercard
   LIMIT = 90
+  MINIMUM_FARE = 1
   attr_reader :balance
 
   def initialize
@@ -18,6 +19,7 @@ class Oystercard
   end
 
   def touch_in
+    raise "Insufficient funds, you need at least £#{MINIMUM_FARE} to travel" if balance < MINIMUM_FARE
     @in_journey = true
   end
 
