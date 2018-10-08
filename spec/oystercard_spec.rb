@@ -3,7 +3,8 @@ require 'oystercard'
 describe Oystercard do
   let (:limit) { Oystercard::LIMIT }
   let (:minimum) { Oystercard::MINIMUM_FARE }
-  let (:station) { double(:station) }
+  let (:station_A) { double(:station_A) }
+  let (:station_B) { double(:station_B) }
 
   describe '#balance' do
     it 'returns initial balance 0' do
@@ -30,7 +31,7 @@ describe Oystercard do
 
   context "When touching in/out" do
     before { subject.top_up(minimum) }
-    before { subject.touch_in(station) }
+    before { subject.touch_in(station_A) }
 
     describe '#touch_in' do
       it 'updates in_journey to true' do
@@ -38,25 +39,44 @@ describe Oystercard do
       end
 
       it 'raises an error if balance is less than minimum amount' do
-        subject.touch_out
-        expect{ subject.touch_in(station) }.to raise_error "Insufficient funds, you need at least £#{minimum} to travel"
+        subject.touch_out(station_B)
+        expect{ subject.touch_in(station_A) }.to raise_error "Insufficient funds, you need at least #{minimum} pounds to travel"
       end
 
       it 'records entry station' do
-        expect(subject.entry_station).to eq station
+        expect(subject.entry_station).to eq station_A
       end
     end
 
     describe '#touch_out' do
+      before { subject.touch_out(station_B) }
+
+
       it 'updates in_journey to false' do
-        subject.touch_out
         expect(subject).not_to be_in_journey
       end
 
       it "deducts minimum fare from balance" do
-        expect{ subject.touch_out }.to change{ subject.balance }.by(-minimum)
+        expect(subject.balance).to eq(0)
+      end
+
+      it 'records exit station' do
+        expect(subject.exit_station).to eq station_B
       end
 
     end
+
+    describe '#journeys' do
+      it 'starts with no journeys' do
+        expect(subject.journeys).to be_empty
+      end
+
+      it 'records journeys' do
+        subject.touch_out(station_B)
+        expect(subject.journeys).to include({entry: station_A, exit: station_B})
+      end
+    end
+
+
   end
 end
