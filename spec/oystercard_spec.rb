@@ -3,6 +3,7 @@ require 'oystercard'
 describe Oystercard do
   let (:limit) { Oystercard::LIMIT }
   let (:minimum) { Oystercard::MINIMUM_FARE }
+  let (:station) { double(:station) }
 
   describe '#balance' do
     it 'returns initial balance 0' do
@@ -29,7 +30,7 @@ describe Oystercard do
 
   context "When touching in/out" do
     before { subject.top_up(minimum) }
-    before { subject.touch_in }
+    before { subject.touch_in(station) }
 
     describe '#touch_in' do
       it 'updates in_journey to true' do
@@ -38,7 +39,11 @@ describe Oystercard do
 
       it 'raises an error if balance is less than minimum amount' do
         subject.touch_out
-        expect{ subject.touch_in }.to raise_error "Insufficient funds, you need at least £#{minimum} to travel"
+        expect{ subject.touch_in(station) }.to raise_error "Insufficient funds, you need at least £#{minimum} to travel"
+      end
+
+      it 'records entry station' do
+        expect(subject.entry_station).to eq station
       end
     end
 
