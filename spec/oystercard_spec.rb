@@ -21,13 +21,6 @@ describe Oystercard do
     end
   end
 
-  describe '#deduct' do
-    it 'decreases balance by amount' do
-      subject.top_up(10)
-      expect{ subject.deduct(5) }.to change{ subject.balance }.by -5
-    end
-  end
-
   describe '#in_journey?' do
     it 'is initially false' do
       expect(subject).not_to be_in_journey
@@ -36,25 +29,29 @@ describe Oystercard do
 
   context "When touching in/out" do
     before { subject.top_up(minimum) }
+    before { subject.touch_in }
 
     describe '#touch_in' do
       it 'updates in_journey to true' do
-        subject.touch_in
         expect(subject).to be_in_journey
       end
 
       it 'raises an error if balance is less than minimum amount' do
-        subject.deduct(minimum)
+        subject.touch_out
         expect{ subject.touch_in }.to raise_error "Insufficient funds, you need at least £#{minimum} to travel"
       end
     end
 
     describe '#touch_out' do
       it 'updates in_journey to false' do
-        subject.touch_in
         subject.touch_out
         expect(subject).not_to be_in_journey
       end
+
+      it "deducts minimum fare from balance" do
+        expect{ subject.touch_out }.to change{ subject.balance }.by(-minimum)
+      end
+
     end
   end
 end
