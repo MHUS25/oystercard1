@@ -43,9 +43,6 @@ describe Oystercard do
         expect{ subject.touch_in(station_A) }.to raise_error "Insufficient funds, you need at least #{minimum} pounds to travel"
       end
 
-      it 'records entry station' do
-        expect(subject.entry_station).to eq station_A
-      end
     end
 
     describe '#touch_out' do
@@ -58,10 +55,6 @@ describe Oystercard do
 
       it "deducts minimum fare from balance" do
         expect(subject.balance).to eq(0)
-      end
-
-      it 'records exit station' do
-        expect(subject.exit_station).to eq station_B
       end
 
     end

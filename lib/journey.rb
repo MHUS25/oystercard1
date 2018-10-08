@@ -15,7 +15,7 @@ class Journey
   end
 
   def fare
-    unless @entry_station && @exit_station
+    unless @exit_station
       PENALTY
     else
       MINIMUM_FARE
@@ -24,10 +24,6 @@ class Journey
 
   def complete?
     @complete
-  end
-
-  def completed_journey
-    {entry: @entry_station, exit: @exit_station}
   end
 
 end
