@@ -24,21 +24,21 @@ describe Oystercard do
     end
   end
 
-  # describe '#in_journey?' do
-  #   it 'is initially false' do
-  #     expect(subject).not_to be_in_journey
-  #   end
-  # end
+  describe '#in_journey' do
+    it 'is initially false' do
+      expect(subject.in_journey).to be false
+    end
+  end
 
   context "When touching in/out" do
     before { subject.top_up(minimum) }
     before { subject.touch_in(station_A) }
 
     describe '#touch_in' do
-      # it 'updates in_journey to true' do
-      #   #binding.pry
-      #   expect(subject).to be_in_journey
-      # end
+      it 'updates in_journey to true' do
+        #binding.pry
+        expect(subject.in_journey).to be true
+      end
 
       it 'raises an error if balance is less than minimum amount' do
         subject.touch_out(station_B)
@@ -49,9 +49,9 @@ describe Oystercard do
     describe '#touch_out' do
       before { subject.touch_out(station_B) }
 
-      # it 'updates in_journey to false' do
-      #   expect(subject).not_to be_in_journey
-      # end
+      it 'updates in_journey to false' do
+        expect(subject.in_journey).to be false
+      end
 
       it "deducts minimum fare from balance" do
         expect(subject.balance).to eq(0)
