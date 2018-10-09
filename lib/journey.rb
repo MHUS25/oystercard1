@@ -26,4 +26,8 @@ class Journey
     @complete
   end
 
+  def completed_journey
+    {entry: @entry_station, exit: @exit_station}
+  end
+
 end

@@ -4,10 +4,10 @@ describe Journey do
   let (:station_A) { double :station_A, zone: 1}
   let (:station_B) { double :station_A, zone: 1}
   let (:penalty) {Journey::PENALTY}
-  let (:journey) { Journey.new("Waterloo") }
+  let (:journey) { Journey.new(station_A) }
 
   it 'records entry station when starting a new journey' do
-    expect(journey.entry_station).to eq "Waterloo"
+    expect(journey.entry_station).to eq station_A
   end
 
   describe '#end' do
@@ -39,11 +39,11 @@ describe Journey do
     end
   end
 
-  # describe '#completed_journey' do
-  #   it 'returns hash of entry & exit stations' do
-  #     journey.end(station_B)
-  #     expect(journey.completed_journey).to eq({entry: "Waterloo", exit: station_B})
-  #   end
-  # end
+  describe '#completed_journey' do
+    it 'returns hash of entry & exit stations' do
+      journey.end(station_B)
+      expect(journey.completed_journey).to eq({entry: station_A, exit: station_B})
+    end
+  end
 
 end

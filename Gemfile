@@ -2,6 +2,14 @@ source "https://rubygems.org"
 ruby "2.5.1"
 
 group :test do
+  gem "pry"
+end
+
+group :development do
+  gem "pry"
+end
+
+group :test do
   gem "rspec"
 end
 
