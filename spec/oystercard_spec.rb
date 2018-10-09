@@ -61,7 +61,6 @@ describe Oystercard do
       end
 
       it 'records journeys' do
-        subject.touch_in(station_A)
         subject.touch_out(station_B)
         expect(subject.journeys).to include({entry: station_A, exit: station_B})
       end
