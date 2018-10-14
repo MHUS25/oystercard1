@@ -1,20 +1,19 @@
 # require "./lib/oystercard"
-require "journey"
+# require "journey"
 
 
 class Oystercard
   LIMIT = 90
-  MINIMUM_FARE = Journey::MINIMUM_FARE
-  PENALTY = Journey::PENALTY
-  attr_reader :balance, :journeys, :in_journey
+  MINIMUM_FARE = 1
+  PENALTY = 6
+  attr_reader :balance, :in_journey, :log
   attr_accessor :current_journey
-
 
   def initialize
     @balance = 0
-    @journeys = []
     @in_journey = false
-    @current_journey
+    # @current_journey
+    @log = JourneyLog.new
   end
 
   def top_up(amount)
@@ -23,29 +22,29 @@ class Oystercard
   end
 
   def touch_in(station)
-    deduct(PENALTY) if in_journey == true
+    deduct(PENALTY) if in_journey?
     raise("Insufficient funds, you need at least #{MINIMUM_FARE} pounds to travel") if balance < MINIMUM_FARE
-    @current_journey = Journey.new
-    @current_journey.start(station)
+    log.start(station)
+    log.clear_journey
     @in_journey = true
   end
 
   def touch_out(station)
-    @current_journey ||= Journey.new
-    @current_journey.end(station)
-    deduct(@current_journey.fare)
-    record_journey
+    log.end(station)
+    deduct(log.current_journey.fare)
     @in_journey = false
+    log.clear_journey
   end
 
-  private
-
-  def record_journey
-     @journeys << @current_journey.completed_journey
+  def in_journey?
+    @in_journey
   end
+
+  #private
+
 
   def deduct(amount)
-    @balance -=amount
+    @balance -= amount
   end
 
 end
